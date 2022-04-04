@@ -10,20 +10,19 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
 import com.cleanup.todoc.R;
-import com.cleanup.todoc.database.dao.TodocDatabase;
 import com.cleanup.todoc.model.Project;
 import com.cleanup.todoc.model.Task;
-import com.cleanup.todoc.repository.ProjectRepository;
-
+import com.cleanup.todoc.repositories.ProjectRepository;
+import com.cleanup.todoc.repositories.TaskRepository;
+import com.cleanup.todoc.viewmodel.ProjectViewModel;
+import com.cleanup.todoc.viewmodel.TaskViewModel;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
@@ -35,6 +34,10 @@ import java.util.Date;
  * @author Gaëtan HERFRAY
  */
 public class MainActivity extends AppCompatActivity implements TasksAdapter.DeleteTaskListener {
+
+    private TaskViewModel taskViewModel;
+
+    private ProjectViewModel projectViewModel;
     /**
      * List of all projects available in the application
      */
@@ -91,6 +94,7 @@ public class MainActivity extends AppCompatActivity implements TasksAdapter.Dele
     @NonNull
     private TextView lblNoTasks;
     private ProjectRepository projectRepository;
+    private TaskRepository taskRepository;
 
 
     @Override
@@ -100,7 +104,12 @@ public class MainActivity extends AppCompatActivity implements TasksAdapter.Dele
         setContentView(R.layout.activity_main);
 
         projectRepository = new ProjectRepository(this);
-        projectRepository.getAllProjects1();
+        projectRepository.getAllProjects();
+
+        taskRepository = new TaskRepository(this);
+        taskRepository.insert(
+                new Task(1L, 1L, "Test", 210000L)
+        );
 
         listTasks = findViewById(R.id.list_tasks);
         lblNoTasks = findViewById(R.id.lbl_no_task);
@@ -183,7 +192,7 @@ public class MainActivity extends AppCompatActivity implements TasksAdapter.Dele
                 dialogInterface.dismiss();
             }
             // If name has been set, but project has not been set (this should never occur)
-            else{
+            else {
                 dialogInterface.dismiss();
             }
         }
@@ -244,6 +253,7 @@ public class MainActivity extends AppCompatActivity implements TasksAdapter.Dele
             adapter.updateTasks(tasks);
         }
     }
+
     /**
      * Returns the dialog allowing the user to create a new task.
      *
@@ -321,5 +331,10 @@ public class MainActivity extends AppCompatActivity implements TasksAdapter.Dele
          * No sort
          */
         NONE
+    }
+
+    private void addTask(@NonNull Task task) {
+        taskViewModel.insert(task);
+        updateTasks();
     }
 }
