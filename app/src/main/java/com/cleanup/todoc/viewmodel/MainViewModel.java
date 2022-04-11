@@ -13,8 +13,8 @@ public class ProjectViewModel extends AndroidViewModel {
     private final LiveData<List<Project>> allProjects;
     private final ProjectRepository repository;
 
-    public ProjectViewModel(Context context) {
-        super((Application) context);
+    public ProjectViewModel(ProjectRepository projectRepository) {
+        super((Application) projectRepository);
         repository = new ProjectRepository(context);
         allProjects = repository.getAllProjects();
     }
