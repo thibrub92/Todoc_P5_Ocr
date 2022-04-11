@@ -28,6 +28,7 @@ public abstract class TodocDatabase extends RoomDatabase {
 
     // --- DAO ---
     public abstract TaskDao taskDao();
+
     public abstract ProjectDao projectDao();
 
     // --- INSTANCE ---
@@ -57,9 +58,13 @@ public abstract class TodocDatabase extends RoomDatabase {
                 Project project1 = new Project(1L, "Projet Tartampion", 0xFFEADAD1);
                 Project project2 = new Project(2L, "Projet Lucidia", 0xFFB4CDBA);
                 Project project3 = new Project(3L, "Projet Circus", 0xFFA3CED2);
+                Project project4 = new Project(4L, "Projet Android", 0xCB55E9);
+                Project project5 = new Project(5L, "Projet IOS", 0x0FC139);
                 projectDao.insert(project1);
                 projectDao.insert(project2);
                 projectDao.insert(project3);
+                projectDao.insert(project4);
+                projectDao.insert(project5);
             });
         }
     };
