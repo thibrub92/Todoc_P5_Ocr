@@ -10,24 +10,46 @@ import androidx.appcompat.widget.AppCompatImageView;
 import androidx.recyclerview.widget.RecyclerView;
 import com.cleanup.todoc.R;
 import com.cleanup.todoc.model.Project;
+import com.cleanup.todoc.model.SortMethod;
 import com.cleanup.todoc.model.Task;
+import com.cleanup.todoc.model.TaskWithProject;
+import java.util.Collections;
 import java.util.List;
 
 public class TasksAdapter extends RecyclerView.Adapter<TasksAdapter.TaskViewHolder> {
 
     @NonNull
-    private List<Task> tasks;
+    private List<TaskWithProject> tasks;
 
     @NonNull
     private final DeleteTaskListener deleteTaskListener;
 
-    TasksAdapter(@NonNull final List<Task> tasks, @NonNull final DeleteTaskListener deleteTaskListener) {
+    TasksAdapter(@NonNull final List<TaskWithProject> tasks, @NonNull final DeleteTaskListener deleteTaskListener) {
         this.tasks = tasks;
         this.deleteTaskListener = deleteTaskListener;
     }
 
-    void updateTasks(@NonNull final List<Task> tasks) {
+    void updateTasks(@NonNull final List<TaskWithProject> tasks, SortMethod sortMethod) {
+        sortTasks(sortMethod);
         this.tasks = tasks;
+        notifyDataSetChanged();
+    }
+
+    void sortTasks(SortMethod sortMethod) {
+        switch (sortMethod) {
+            case ALPHABETICAL:
+                Collections.sort(tasks, new TaskWithProject.TaskAZComparator());
+                break;
+            case ALPHABETICAL_INVERTED:
+                Collections.sort(tasks, new TaskWithProject.TaskZAComparator());
+                break;
+            case RECENT_FIRST:
+                Collections.sort(tasks, new TaskWithProject.TaskRecentComparator());
+                break;
+            case OLD_FIRST:
+                Collections.sort(tasks, new TaskWithProject.TaskOldComparator());
+                break;
+        }
         notifyDataSetChanged();
     }
 
@@ -52,7 +74,6 @@ public class TasksAdapter extends RecyclerView.Adapter<TasksAdapter.TaskViewHold
 
         void onDeleteTask(Task task);
     }
-
 
     class TaskViewHolder extends RecyclerView.ViewHolder {
 
@@ -80,18 +101,18 @@ public class TasksAdapter extends RecyclerView.Adapter<TasksAdapter.TaskViewHold
                 @Override
                 public void onClick(View view) {
                     final Object tag = view.getTag();
-                    if (tag instanceof Task) {
+                    if (tag instanceof TaskWithProject) {
                         TaskViewHolder.this.deleteTaskListener.onDeleteTask((Task) tag);
                     }
                 }
             });
         }
 
-        void bind(Task task) {
-            lblTaskName.setText(task.getName());
-            imgDelete.setTag(task);
+        void bind(TaskWithProject taskWithProject) {
+            lblTaskName.setText(taskWithProject.task.getName());
+            imgDelete.setTag(taskWithProject.task);
 
-            final Project taskProject= task.getProject();
+            final Project taskProject = taskWithProject.project;
             if (taskProject != null) {
                 imgProject.setSupportImageTintList(ColorStateList.valueOf(taskProject.getColor()));
                 lblProjectName.setText(taskProject.getName());

@@ -14,11 +14,8 @@ import java.util.concurrent.Executors;
 public class ViewModelFactory implements ViewModelProvider.Factory {
 
     private final ProjectRepository projectRepository;
-
     private final TaskRepository taskRepository;
-
     private final Executor executor;
-
     private static ViewModelFactory factory;
 
     public static ViewModelFactory getInstance(Context context) {

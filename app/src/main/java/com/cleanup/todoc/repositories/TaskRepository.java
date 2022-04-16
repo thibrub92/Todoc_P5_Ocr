@@ -3,6 +3,7 @@ package com.cleanup.todoc.repositories;
 import androidx.lifecycle.LiveData;
 import com.cleanup.todoc.database.dao.TaskDao;
 import com.cleanup.todoc.model.Task;
+import com.cleanup.todoc.model.TaskWithProject;
 import java.util.List;
 
 public class TaskRepository {
@@ -13,7 +14,7 @@ public class TaskRepository {
     }
 
     // ---GET---
-    public LiveData<List<Task>> getAllTasks() {
+    public LiveData<List<TaskWithProject>> getAllTasks() {
         return taskDao.getAllTasks();
     }
 

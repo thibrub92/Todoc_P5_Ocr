@@ -8,6 +8,7 @@ import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
 import androidx.room.Update;
 import com.cleanup.todoc.model.Task;
+import com.cleanup.todoc.model.TaskWithProject;
 import java.util.List;
 
 @Dao
@@ -26,6 +27,6 @@ public interface TaskDao {
     void updateTask(Task task);
 
     @Query("SELECT * FROM task_table")
-    LiveData<List<Task>> getAllTasks();
+    LiveData<List<TaskWithProject>> getAllTasks();
 
 }

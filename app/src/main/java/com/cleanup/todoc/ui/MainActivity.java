@@ -10,6 +10,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
@@ -18,22 +19,22 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
 import com.cleanup.todoc.R;
 import com.cleanup.todoc.injection.ViewModelFactory;
 import com.cleanup.todoc.model.Project;
+import com.cleanup.todoc.model.SortMethod;
 import com.cleanup.todoc.model.Task;
+import com.cleanup.todoc.model.TaskWithProject;
 import com.cleanup.todoc.viewmodel.MainViewModel;
+
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements TasksAdapter.DeleteTaskListener {
 
-    @NonNull
-    private final ArrayList<Task> tasks = new ArrayList<>();
-
-    private final TasksAdapter adapter = new TasksAdapter(tasks, this);
+    private final TasksAdapter adapter = new TasksAdapter(new ArrayList<>(), this);
 
     @NonNull
     private SortMethod sortMethod = SortMethod.NONE;
@@ -63,10 +64,6 @@ public class MainActivity extends AppCompatActivity implements TasksAdapter.Dele
 
         mainViewModel = new ViewModelProvider(this, ViewModelFactory.getInstance(this)).get(MainViewModel.class);
 
-        mainViewModel.insertTask(
-                new Task(1L, 1L, "test", 2100000L)
-        );
-
         listTasks = findViewById(R.id.list_tasks);
         lblNoTasks = findViewById(R.id.lbl_no_task);
 
@@ -83,10 +80,17 @@ public class MainActivity extends AppCompatActivity implements TasksAdapter.Dele
     }
 
     private void observeTask() {
-        mainViewModel.getAllTasks().observe(this, new Observer<List<Task>>() {
+        mainViewModel.getAllTasks().observe(this, new Observer<List<TaskWithProject>>() {
             @Override
-            public void onChanged(List<Task> tasks) {
-                adapter.updateTasks(tasks);
+            public void onChanged(List<TaskWithProject> tasks) {
+                if (tasks.size() == 0) {
+                    lblNoTasks.setVisibility(View.VISIBLE);
+                    listTasks.setVisibility(View.GONE);
+                } else {
+                    lblNoTasks.setVisibility(View.GONE);
+                    listTasks.setVisibility(View.VISIBLE);
+                    adapter.updateTasks(tasks, sortMethod);
+                }
             }
         });
     }
@@ -110,14 +114,14 @@ public class MainActivity extends AppCompatActivity implements TasksAdapter.Dele
         } else if (id == R.id.filter_recent_first) {
             sortMethod = SortMethod.RECENT_FIRST;
         }
-        updateTasks();
+        adapter.sortTasks(sortMethod);
+
         return super.onOptionsItemSelected(item);
     }
 
     @Override
     public void onDeleteTask(Task task) {
-        tasks.remove(task);
-        updateTasks();
+        mainViewModel.deleteTask(task);
     }
 
     /**
@@ -143,11 +147,8 @@ public class MainActivity extends AppCompatActivity implements TasksAdapter.Dele
             }
             // If both project and name of the task have been set
             else if (taskProject != null) {
-                // TODO: Replace this by id of persisted task
-                long id = (long) (Math.random() * 50000);
 
                 Task task = new Task(
-                        id,
                         taskProject.getId(),
                         taskName,
                         new Date().getTime()
@@ -162,7 +163,7 @@ public class MainActivity extends AppCompatActivity implements TasksAdapter.Dele
                 dialogInterface.dismiss();
             }
         }
-        // If dialog is aloready closed
+        // If dialog is already closed
         else {
             dialogInterface.dismiss();
         }
@@ -184,35 +185,6 @@ public class MainActivity extends AppCompatActivity implements TasksAdapter.Dele
 
     private void addTask(@NonNull Task task) {
         mainViewModel.insertTask(task);
-        updateTasks();
-    }
-
-    /**
-     * Updates the list of tasks in the UI
-     */
-    private void updateTasks() {
-        if (tasks.size() == 0) {
-            lblNoTasks.setVisibility(View.VISIBLE);
-            listTasks.setVisibility(View.GONE);
-        } else {
-            lblNoTasks.setVisibility(View.GONE);
-            listTasks.setVisibility(View.VISIBLE);
-            switch (sortMethod) {
-                case ALPHABETICAL:
-                    Collections.sort(tasks, new Task.TaskAZComparator());
-                    break;
-                case ALPHABETICAL_INVERTED:
-                    Collections.sort(tasks, new Task.TaskZAComparator());
-                    break;
-                case RECENT_FIRST:
-                    Collections.sort(tasks, new Task.TaskRecentComparator());
-                    break;
-                case OLD_FIRST:
-                    Collections.sort(tasks, new Task.TaskOldComparator());
-                    break;
-            }
-            adapter.updateTasks(tasks);
-        }
     }
 
     /**
@@ -273,18 +245,5 @@ public class MainActivity extends AppCompatActivity implements TasksAdapter.Dele
 
             }
         });
-    }
-
-    private enum SortMethod {
-
-        ALPHABETICAL,
-
-        ALPHABETICAL_INVERTED,
-
-        RECENT_FIRST,
-
-        OLD_FIRST,
-
-        NONE
     }
 }
