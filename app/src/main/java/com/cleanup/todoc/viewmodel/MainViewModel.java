@@ -2,11 +2,13 @@ package com.cleanup.todoc.viewmodel;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModel;
+
 import com.cleanup.todoc.model.Project;
 import com.cleanup.todoc.model.Task;
 import com.cleanup.todoc.model.TaskWithProject;
 import com.cleanup.todoc.repositories.ProjectRepository;
 import com.cleanup.todoc.repositories.TaskRepository;
+
 import java.util.List;
 import java.util.concurrent.Executor;
 
