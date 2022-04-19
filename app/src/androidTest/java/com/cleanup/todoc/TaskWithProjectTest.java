@@ -31,21 +31,18 @@ public class TaskWithProjectTest {
     public InstantTaskExecutorRule instantTaskExecutorRule = new InstantTaskExecutorRule();
 
     @Before
-    public void initDb() throws Exception
-    {
+    public void initDb() throws Exception {
         this.database = Room.inMemoryDatabaseBuilder(InstrumentationRegistry.getContext(), TodocDatabase.class)
                 .allowMainThreadQueries().build();
     }
 
     @After
-    public void closeDb() throws Exception
-    {
+    public void closeDb() throws Exception {
         this.database.close();
     }
 
     @Test
-    public void insertOneProjectAndGetProjects () throws InterruptedException
-    {
+    public void insertOneProjectAndGetProjects() throws InterruptedException {
         List<Project> projects = (List<Project>) TestUtils.withRecyclerView(this.database.projectDao().getAllProjects(PROJECT));
         this.database.projectDao().getAllProjects(PROJECT);
         assertEquals(projects.size(), 0);
@@ -55,16 +52,14 @@ public class TaskWithProjectTest {
     }
 
     @Test
-    public void getTasksWhenNoTaskInserted() throws InterruptedException
-    {
+    public void getTasksWhenNoTaskInserted() throws InterruptedException {
         List<Task> tasks = TestUtils.withRecyclerView(this.database.taskDao().getAllTasks());
         assertTrue(tasks.isEmpty());
     }
 
     @Test
-    public void insertOneTaskAndGetTasks() throws InterruptedException
-    {
-        List<Task> tasks = TestUtils.getValue(this.database.taskDao().getAllTasks());
+    public void insertOneTaskAndGetTasks() throws InterruptedException {
+        List<Task> tasks = TestUtils.withRecyclerView(this.database.taskDao().getAllTasks());
         assertEquals(tasks.size(), 0);
 
         this.database.projectDao().insert(PROJECT);
@@ -75,12 +70,11 @@ public class TaskWithProjectTest {
     }
 
     @Test
-    public void insertTasksAndDeleteTheSecond() throws InterruptedException
-    {
+    public void insertTasksAndDeleteTheSecond() throws InterruptedException {
         this.database.projectDao().insert(PROJECT);
         this.database.taskDao().insert(TASK_FIRST);
         this.database.taskDao().insert(TASK_SECOND);
-        List<Task> tasks = TestUtils.class(this.database.taskDao().getAllTasks());
+        List<Task> tasks = TestUtils.withRecyclerView(this.database.taskDao().getAllTasks());
         assertEquals(tasks.size(), 2);
         this.database.taskDao().deleteTask(TASK_SECOND);
         tasks = TestUtils.withRecyclerView(this.database.taskDao().getAllTasks());
