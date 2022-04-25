@@ -40,12 +40,12 @@ public class TaskUnitTest {
         taskWithProject.setTask(testTask);
 
         TaskWithProject taskWithProject2 = new TaskWithProject();
-        taskWithProject.setProject(testProject);
-        taskWithProject.setTask(testTask2);
+        taskWithProject2.setProject(testProject);
+        taskWithProject2.setTask(testTask2);
 
         TaskWithProject taskWithProject3 = new TaskWithProject();
-        taskWithProject.setProject(testProject2);
-        taskWithProject.setTask(testTask3);
+        taskWithProject3.setProject(testProject2);
+        taskWithProject3.setTask(testTask3);
 
 
         final List<TaskWithProject> tasks = new ArrayList<>();
@@ -77,12 +77,12 @@ public class TaskUnitTest {
         taskWithProject.setTask(testTask);
 
         TaskWithProject taskWithProject2 = new TaskWithProject();
-        taskWithProject.setProject(testProject);
-        taskWithProject.setTask(testTask2);
+        taskWithProject2.setProject(testProject);
+        taskWithProject2.setTask(testTask2);
 
         TaskWithProject taskWithProject3 = new TaskWithProject();
-        taskWithProject.setProject(testProject2);
-        taskWithProject.setTask(testTask3);
+        taskWithProject3.setProject(testProject2);
+        taskWithProject3.setTask(testTask3);
 
 
         final List<TaskWithProject> tasks = new ArrayList<>();
@@ -115,12 +115,12 @@ public class TaskUnitTest {
         taskWithProject.setTask(testTask);
 
         TaskWithProject taskWithProject2 = new TaskWithProject();
-        taskWithProject.setProject(testProject);
-        taskWithProject.setTask(testTask2);
+        taskWithProject2.setProject(testProject);
+        taskWithProject2.setTask(testTask2);
 
         TaskWithProject taskWithProject3 = new TaskWithProject();
-        taskWithProject.setProject(testProject2);
-        taskWithProject.setTask(testTask3);
+        taskWithProject3.setProject(testProject2);
+        taskWithProject3.setTask(testTask3);
 
 
         final List<TaskWithProject> tasks = new ArrayList<>();
@@ -152,12 +152,12 @@ public class TaskUnitTest {
         taskWithProject.setTask(testTask);
 
         TaskWithProject taskWithProject2 = new TaskWithProject();
-        taskWithProject.setProject(testProject);
-        taskWithProject.setTask(testTask2);
+        taskWithProject2.setProject(testProject);
+        taskWithProject2.setTask(testTask2);
 
         TaskWithProject taskWithProject3 = new TaskWithProject();
-        taskWithProject.setProject(testProject2);
-        taskWithProject.setTask(testTask3);
+        taskWithProject3.setProject(testProject2);
+        taskWithProject3.setTask(testTask3);
 
 
         final List<TaskWithProject> tasks = new ArrayList<>();

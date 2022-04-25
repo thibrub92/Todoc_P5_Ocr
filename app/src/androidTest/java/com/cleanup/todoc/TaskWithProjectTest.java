@@ -37,13 +37,16 @@ public class TaskWithProjectTest {
         this.database = Room
                 .inMemoryDatabaseBuilder(InstrumentationRegistry.getContext(), TodocDatabase.class)
                 .allowMainThreadQueries().build();
+        TASK_FIRST.setId(1L);
+        TASK_SECOND.setId(2L);
     }
 
     @After
     public void closeDb() throws Exception {
         this.database.close();
     }
- // PROJECT DAO
+
+    // PROJECT DAO
     @Test
     public void insertOneProjectAndGetProjects() throws InterruptedException {
 
@@ -74,10 +77,12 @@ public class TaskWithProjectTest {
         this.database.projectDao().insert(PROJECT);
         this.database.taskDao().insert(TASK_FIRST);
         this.database.taskDao().insert(TASK_SECOND);
+
         List<TaskWithProject> tasks = LiveDataTestUtil.getValue(this.database.taskDao().getAllTasks());
-        assertEquals(tasks.size(), 2);
+        assertEquals(2, tasks.size());
         this.database.taskDao().deleteTask(TASK_SECOND);
+
         tasks = LiveDataTestUtil.getValue(this.database.taskDao().getAllTasks());
-        assertEquals(tasks.size(), 1);
+        assertEquals(1, tasks.size());
     }
 }
