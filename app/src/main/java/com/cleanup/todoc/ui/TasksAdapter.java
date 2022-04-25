@@ -30,8 +30,8 @@ public class TasksAdapter extends RecyclerView.Adapter<TasksAdapter.TaskViewHold
     }
 
     void updateTasks(@NonNull final List<TaskWithProject> tasks, SortMethod sortMethod) {
-        sortTasks(sortMethod);
         this.tasks = tasks;
+        sortTasks(sortMethod);
         notifyDataSetChanged();
     }
 
@@ -101,7 +101,7 @@ public class TasksAdapter extends RecyclerView.Adapter<TasksAdapter.TaskViewHold
                 @Override
                 public void onClick(View view) {
                     final Object tag = view.getTag();
-                    if (tag instanceof TaskWithProject) {
+                    if (tag instanceof Task) {
                         TaskViewHolder.this.deleteTaskListener.onDeleteTask((Task) tag);
                     }
                 }

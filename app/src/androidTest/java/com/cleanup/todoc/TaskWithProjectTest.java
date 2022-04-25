@@ -10,6 +10,8 @@ import androidx.test.InstrumentationRegistry;
 import com.cleanup.todoc.database.dao.TodocDatabase;
 import com.cleanup.todoc.model.Project;
 import com.cleanup.todoc.model.Task;
+import com.cleanup.todoc.model.TaskWithProject;
+import com.cleanup.todoc.utils.LiveDataTestUtil;
 
 import org.junit.After;
 import org.junit.Before;
@@ -22,17 +24,18 @@ public class TaskWithProjectTest {
 
     private TodocDatabase database;
 
-    private static Project PROJECT = new Project(1, "Tartampion", 0xFFEADAD1);
-    private static long PROJECT_ID = PROJECT.getId();
-    private static Task TASK_FIRST = new Task(PROJECT_ID, "test1", 0);
-    private static Task TASK_SECOND = new Task(PROJECT_ID, "test2", 0);
+    private static final long PROJECT_ID = 1L;
+    private static final Project PROJECT = new Project(PROJECT_ID, "Tartampion", 0xFFEADAD1);
+    private static final Task TASK_FIRST = new Task(PROJECT_ID, "aaa", 1650626937);
+    private static final Task TASK_SECOND = new Task(PROJECT_ID, "bbb", 1550626937);
 
     @Rule
     public InstantTaskExecutorRule instantTaskExecutorRule = new InstantTaskExecutorRule();
 
     @Before
     public void initDb() throws Exception {
-        this.database = Room.inMemoryDatabaseBuilder(InstrumentationRegistry.getContext(), TodocDatabase.class)
+        this.database = Room
+                .inMemoryDatabaseBuilder(InstrumentationRegistry.getContext(), TodocDatabase.class)
                 .allowMainThreadQueries().build();
     }
 
@@ -40,32 +43,29 @@ public class TaskWithProjectTest {
     public void closeDb() throws Exception {
         this.database.close();
     }
-
+ // PROJECT DAO
     @Test
     public void insertOneProjectAndGetProjects() throws InterruptedException {
-        List<Project> projects = (List<Project>) TestUtils.withRecyclerView(this.database.projectDao().getAllProjects(PROJECT));
-        this.database.projectDao().getAllProjects(PROJECT);
+
+        List<Project> projects = LiveDataTestUtil.getValue(this.database.projectDao().getAllProjects());
         assertEquals(projects.size(), 0);
-        projects = TestUtils.withRecyclerView(this.database.projectDao().getAllProjects(PROJECT));
+
+
+        this.database.projectDao().insert(new Project(6L, "test", 0xFFEADAD1));
+
+        projects = LiveDataTestUtil.getValue(this.database.projectDao().getAllProjects());
         assertEquals(projects.size(), 1);
-
-    }
-
-    @Test
-    public void getTasksWhenNoTaskInserted() throws InterruptedException {
-        List<Task> tasks = TestUtils.withRecyclerView(this.database.taskDao().getAllTasks());
-        assertTrue(tasks.isEmpty());
     }
 
     @Test
     public void insertOneTaskAndGetTasks() throws InterruptedException {
-        List<Task> tasks = TestUtils.withRecyclerView(this.database.taskDao().getAllTasks());
+        List<TaskWithProject> tasks = LiveDataTestUtil.getValue(this.database.taskDao().getAllTasks());
         assertEquals(tasks.size(), 0);
 
         this.database.projectDao().insert(PROJECT);
         this.database.taskDao().insert(TASK_FIRST);
 
-        tasks = (List<Task>) TestUtils.withRecyclerView(this.database.taskDao().getAllTasks());
+        tasks = LiveDataTestUtil.getValue(this.database.taskDao().getAllTasks());
         assertEquals(tasks.size(), 1);
     }
 
@@ -74,10 +74,10 @@ public class TaskWithProjectTest {
         this.database.projectDao().insert(PROJECT);
         this.database.taskDao().insert(TASK_FIRST);
         this.database.taskDao().insert(TASK_SECOND);
-        List<Task> tasks = TestUtils.withRecyclerView(this.database.taskDao().getAllTasks());
+        List<TaskWithProject> tasks = LiveDataTestUtil.getValue(this.database.taskDao().getAllTasks());
         assertEquals(tasks.size(), 2);
         this.database.taskDao().deleteTask(TASK_SECOND);
-        tasks = TestUtils.withRecyclerView(this.database.taskDao().getAllTasks());
+        tasks = LiveDataTestUtil.getValue(this.database.taskDao().getAllTasks());
         assertEquals(tasks.size(), 1);
     }
 }
