@@ -4,6 +4,7 @@ import androidx.annotation.ColorInt;
 import androidx.annotation.NonNull;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
+
 import java.util.List;
 
 @Entity(tableName = "project_table")

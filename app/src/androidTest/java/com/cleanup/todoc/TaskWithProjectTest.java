@@ -1,7 +1,6 @@
 package com.cleanup.todoc;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule;
 import androidx.room.Room;
@@ -46,7 +45,6 @@ public class TaskWithProjectTest {
         this.database.close();
     }
 
-    // PROJECT DAO
     @Test
     public void insertOneProjectAndGetProjects() throws InterruptedException {
 
